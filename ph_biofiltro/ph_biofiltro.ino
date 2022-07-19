@@ -1,6 +1,3 @@
-
-//PH
-#include <Wire.h>
 #include <ThingSpeak.h>
 #include <ESP8266WiFi.h>
  
@@ -29,38 +26,24 @@ float ph_act;
 ///////////////////////////////////////////////////////////////////
 
 float readTSData( long TSChannel,unsigned int TSField ){
-    
   float data =  ThingSpeak.readFloatField( TSChannel, TSField, readAPIKey );
   Serial.println( " Data read from ThingSpeak: " + String( data, 9 ) );
   return data;
-
 }
 
 
 int writeTSData( long TSChannel, unsigned int TSField, float data ){
   int  writeSuccess = ThingSpeak.writeField( TSChannel, TSField, data, writeAPIKey ); // Write the data to the channel
-  if ( writeSuccess ){
-    
-    Serial.println( String(data) + " written to Thingspeak." );
-    }
-    
+  if ( writeSuccess ){ Serial.println( String(data) + " written to Thingspeak." ); } 
     return writeSuccess;
 }
 
 
 int write2TSData( long TSChannel, unsigned int TSField1, float field1Data ){
-
   ThingSpeak.setField( TSField1, field1Data );
-   
   int writeSuccess = ThingSpeak.writeFields( TSChannel, writeAPIKey );
   return writeSuccess;
 }
-
-
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-
 
 int connectWiFi(){
     WiFi.begin( ssid, password );
@@ -71,18 +54,17 @@ int connectWiFi(){
     
     Serial.println( "Connected" );
     ThingSpeak.begin( client );
-    Serial.println("Llegamos hasta este punto....");
+    return 0;
 }
 
-
-
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
  
 void setup() {
   Serial.begin(9600);
   Serial.println("Start");
   connectWiFi();
-  Wire.begin();
-
 }
  
 void loop() {
@@ -94,7 +76,8 @@ void loop() {
  
  float avgvalue=0;
  for(int i=0;i<10;i++)
-  avgvalue+=buffer_arr[i];
+    avgvalue+=buffer_arr[i];
+ 
  float volt=(float)avgvalue*5.0/1023/10; 
  float ph_act = -5.7746 * volt + calibration_value;
 
@@ -103,9 +86,7 @@ void loop() {
 
  
   //IMPRIME TEMPERATURA
-
  Serial.print("pH Val= ");
  Serial.println(ph_act);
-
  delay(1000);
 }
